@@ -1,0 +1,44 @@
+body {
+	padding: 10px;
+}
+img {
+	height: 200px;
+    width: 200px;
+    object-fit:scale-down;
+}
+.card-body{
+    height: 300px;
+}
+.card-title{
+    height: 50px;
+}
+.card-title > a{
+    color: rgb(97, 95, 95); 
+}
+.card-description{
+    
+    height: 100px;
+}
+.card-description > p{
+color:rgb(97, 95, 95); 
+}
+.price{
+    margin-top: 0px;
+}
+.creator-time{
+    color: rgb(97, 95, 95); 
+    float: right;
+}
+
+.parent {
+    border: 1px solid black;
+    margin: 1rem;
+    padding: 2rem 2rem;
+    text-align: center;
+  }
+  .child {
+    display: inline-block;
+    border: 1px solid red;
+    padding: 1rem 1rem;
+    vertical-align: middle;
+  }

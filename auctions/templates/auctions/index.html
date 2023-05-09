@@ -1,0 +1,73 @@
+{% extends "auctions/layout.html" %}
+<style>
+	.user {
+		margin: 45px;
+	}
+</style>
+{% block body %}
+
+{% if active == True and watchlist == False %}
+<h2>Listings</h2>
+{% elif active == False and watchlist == False %}
+<h2>Closed Listings</h2>
+
+{% elif active == True and watchlist == True %}
+<h2>Watching List</h2>
+{% endif %}
+
+<form action="{% url 'categoryListing' %}" method="POST" class="my-2">
+	{% csrf_token %}
+	<label for="category">Category:</label>
+	<select name="category" id="category">
+		{% for categ in categories %}
+		<option value="{{ categ }}">{{ categ }}</option>
+		{% endfor %}
+	</select>
+	<button type="submit" class="btn btn-success">Submit</button>
+</form>
+<div class="row mx-3">
+	{% for listing in listings %}
+
+	<div class="card mx-1" style="width: 23em">
+		<img
+			class="card-img-top"
+			src="{{listing.imageURL}}"
+			alt="{{listing.title}}"
+		/>
+		<div class="card-body">
+			<div class="card-title">
+				<h5 href="{% url 'listing' id=listing.id %}">{{listing.title}}</h5>
+				{% if active == False %}
+				<h6 style="color: rgb(255, 0, 0)"> This auction is closed</h6>
+				{% endif %}
+			</div>
+			<div class="card-description">
+				<h6>Description:</h6>
+				<p class="card-text">{{listing.description}}.</p>
+			</div>
+			<div class="price">
+				<h5>U$ {{listing.price.bid}}</h5>
+				{% if active %}
+				<a
+					href="{% url 'listing' id=listing.id %}"
+					class="btn btn-primary"
+					>Place bid</a
+				>
+				{% else %}
+				<a
+					href="{% url 'listing' id=listing.id %}"
+					class="btn btn-primary"
+					>Details</a>
+				{% endif %}
+				<div class="creator-time">
+					<a class="user">listed by <b>{{listing.creator}}</b></a>
+					<br />
+					<a style="color: grey"> created in {{listing.time}}</a>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

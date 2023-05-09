@@ -1,0 +1,142 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div 
+style="
+margin-left: 15;
+width: 50%;
+height: 600px;
+">
+<!-- message if newbid action -->
+{% if update %}
+    <div class="alert alert-success" >
+        {{alert}}
+    </div>
+
+    {% elif update == False %}
+    <div class="alert alert-danger" >
+        {{alert}}
+    </div>
+    {% endif %}
+
+<!-- message if auction close action -->
+{% if closed %}
+    <div class="alert alert-success" >
+        <a>{{message}} The winner is <b>{{listing.price.bidder}}</b></a>
+    </div>
+
+    {% elif closed == False %}
+    <div class="alert alert-danger" >
+        {{message}}
+    </div>
+    {% endif %}
+
+    <!--Title image section-->
+    <div 
+    style=
+    "display:flexbox">
+
+        <h1>{{listing.title}}</h1>
+        <div style="float:right">
+        {% if user.is_authenticated and active == True %}
+            {% if inWatchlist %}
+            <form action="{% url 'removeWatchlist' id=listing.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-dark">Remove from watching list</button>
+            </form>
+            {% else %}
+            <form action="{% url 'addWatchlist' id=listing.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-dark">Add to watching list</button>
+            </form>
+            {% endif %}
+        {% endif %}
+        </div>
+        <img
+            style="
+            margin: 5px 5px 5px 0;
+            height: 400px;
+            width: 400px;
+            float: left;
+            border:1px solid rgb(224, 223, 223); border-radius: 10px;"
+            class="image-listing"
+            src="{{listing.imageURL}}"
+            alt="{{listing.title}}"/>
+        
+
+            <!-- Details section -->
+            <div >
+                <div>
+                    {% if active == True %}
+                    <h3>U$ {{listing.price.bid}}</h3>
+                    {% else %}
+                    <h3 style="color:green">{{listing.price.bidder}} won the bid (U$ {{listing.price.bid}})</h3>
+                    {% endif %}
+                    <h6>Description:</h6>
+                    <a style="color:rgb(0, 0, 0)">{{listing.description}}</a>
+                </div>
+
+                <div style="margin-top:5px">
+                    <h6 class="user">Listed by: <b>{{listing.creator}}</b></h6>
+
+                    <!-- close auction button -->
+                    {% if user == listing.creator and listing.active == True %}
+                    <form method="POST" action="{% url 'closeAuction' id=listing.id %}" >
+                        {% csrf_token %}
+                        <button style="float:right" name="closeAuction" type="submit" class="btn btn-danger">Close auction</button>
+                    </form>
+                    {% endif %}
+                    
+
+                    <a style="color: grey"> created in {{listing.time}}</a>
+                    <br><br>
+                    <h6>Categories:</h6>
+                    <a>{{listing.category}}</a>
+                </div>
+            </div>
+    </div>
+
+        <!-- add Bid section -->
+    <div style="display:flexbox">
+        {% if user.is_authenticated and active == True %}
+        <div>
+            <form action = "{% url 'addBid' id=listing.id %}" method="POST">
+                {% csrf_token %}
+                <input class="form-control" name="newBid" type="number" min="1" step="any" placeholder="Choose a price that you find suitable to this auction"/>
+                
+                <button style ="margin-top: 10px;" type="submit" class="btn btn-primary">Place bid</button>
+            </form>
+        {% endif %}
+        </div>
+        <!-- comments section -->
+        <div style="margin-top: 20px">
+            <form action="{% url 'addComment' id=listing.id %}" method="POST">
+                {% csrf_token %}
+                <h3>Comments</h3>
+
+                <div>
+                    {% if user.is_authenticated and active == True %}
+                    <button style="margin-bottom: 10px" type="submit" class="btn btn-secondary">Add a comment</button>
+                    <input type="text" class="form-control" name="addComment" placeholder="Type whatever you want to say about this auction">    
+                    {% endif %}   
+                </div>
+
+                <div 
+                    style="border:1px solid rgb(224, 223, 223);
+                    border-radius: 10px;
+                    margin: 5px 0;
+                    height: auto;
+                    width: auto;">
+
+                    {% for comment in comments %}
+                    <a><b>{{comment.commenter}}: </b>{{comment.comment}}<br></a>      
+                    {% endfor %}   
+                </div>    
+            </form>
+        </div>
+        
+    </div>
+
+    
+</div>
+{% endblock %}

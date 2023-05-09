@@ -1,0 +1,40 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+<form method="POST" action="{% url 'create' %}">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="title">Title:</label>
+        <input type="text" class="form-control" name="title" id="title"  placeholder="enter the title of the listing">
+    </div>
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <textarea class="form-control" name="description" id="description"  placeholder="enter the description of the listing"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="image">Image URL:</label>
+        <input  type="text" class="form-control" name="imageurl" id="imageurl"  placeholder="enter the image url of the listing">
+    </div>
+    <div class="form-group">
+        <label for="starterBid">Starting bid:</label>
+        <input  type="number" class="form-control" name="starterBid" id="starterBid"  placeholder="enter the starting bid of the listing" min="0" step=0.01>
+    </div>
+    <div class="form-select">
+        <label for="categories">Categories:</label>
+        <select class="form-select" name="category" id="category">
+            {% for category in categories %}
+            <option value="{{ category }}">{{category}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <input  type="submit" class="btn btn-primary mb-2" id="submit"  placeholder="Submit">
+    </div>
+{% else %}
+<div class="alert alert-danger" role="alert">
+    <a> must be <a href="{% url 'login' %}">logged in</a> to create a new listing</a>
+</div>
+{%endif%}
+{% endblock %}
